@@ -21,6 +21,9 @@ public class BinOpAgent implements Agent {
         this.first=manager.getTopic(atopic);//create the required topics.
         this.second=manager.getTopic(btopic);
         this.out=manager.getTopic(out);
+        this.first.subscribe(this);
+        this.second.subscribe(this);
+        this.out.addPublisher(this);
 
     }
 //    name getter
@@ -38,6 +41,10 @@ public class BinOpAgent implements Agent {
     @Override
     public void callback(String topic, Message msg) {
         if(Double.isNaN(msg.asDouble)) return;//if the value is not a double.
+        if(topic.equals(first.name))
+            left= msg.asDouble;
+        else if(topic.equals(second.name))
+            right= msg.asDouble;
         if(left!=null&&right!=null) {//checking if both of the numbers is not a null/
          double result = operator.apply(left, right);//using the lambada function and getting double result.
          out.publish(new Message(result));//publish the result.

@@ -32,15 +32,11 @@ public class Node {
         this.msg=msg;
     }
     public void addEdge(Node n){/// add Node to List
-        edges.add(new Node(n.getName()));
+        edges.add(n);
     }
     public boolean hasCycles(){/// checking if there is any cycles
-        List<Node> hasvisit=new ArrayList<>();///new Array of visited Nodes
-        for(Node n : edges) {
-            if (helpCycles(n,hasvisit))/// sending to the help function
-                return true;
-        }
-        return false;
+        List<Node> hasvisit=new ArrayList<Node>();///new Array of visited Nodes
+        return (helpCycles(this,hasvisit));
     }
     private boolean helpCycles(Node n,List<Node> hasvisit){/// checking by recursion if there is any cycles
         if(hasvisit.contains(n)){/// if node is exist in hasvisit
