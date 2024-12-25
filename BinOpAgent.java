@@ -6,24 +6,24 @@ import java.util.function.Function;
 import test.TopicManagerSingleton.TopicManager;
 
 public class BinOpAgent implements Agent {
-    private String agentName;
-    private Topic first;
-    private Topic second;
-    private Topic out;
-    private BinaryOperator<Double> operator;
-    private Double left=0.0;
-    private Double right=0.0;
+    private String agentName;//name of agent
+    private Topic first; //input topic
+    private Topic second;//input topic
+    private Topic out;//output input
+    private BinaryOperator<Double> operator;//lambda operator
+    private Double left=null;//double for lambada operator
+    private Double right=null;//double for lambada operator
     // constructor
-    public BinOpAgent(String agentName, String atopic, String btopic, String out, BinaryOperator<Double> combiner) {
+    public BinOpAgent(String agentName, String atopic, String btopic, String out, BinaryOperator<Double> combiner) {//constructor
         this.agentName = agentName;
         operator = combiner;
         TopicManager manager=TopicManagerSingleton.get();//get the topic manager instance
         this.first=manager.getTopic(atopic);//create the required topics.
         this.second=manager.getTopic(btopic);
         this.out=manager.getTopic(out);
-        this.first.subscribe(this);
-        this.second.subscribe(this);
-        this.out.addPublisher(this);
+        this.first.subscribe(this);//adding first to the subs array
+        this.second.subscribe(this);//adding second to the subs array
+        this.out.addPublisher(this);//adding out to the publisher array
 
     }
 //    name getter
@@ -40,8 +40,8 @@ public class BinOpAgent implements Agent {
 //  callback method
     @Override
     public void callback(String topic, Message msg) {
-        if(Double.isNaN(msg.asDouble)) return;//if the value is not a double.
-        if(topic.equals(first.name))
+        if(Double.isNaN(msg.asDouble))  return;//if the value is not a double.
+        if(topic.equals(first.name))//update the variable (left or right) based on the topic
             left= msg.asDouble;
         else if(topic.equals(second.name))
             right= msg.asDouble;
