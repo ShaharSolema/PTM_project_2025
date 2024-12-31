@@ -13,7 +13,7 @@ public class PlusAgent implements Agent {
         first=manager.getTopic(subs[0]);
         second=manager.getTopic(subs[1]);
         out=manager.getTopic(pubs[0]);
-        first.subscribe(this);
+        first.subscribe(this);//subscribe to subs
         second.subscribe(this);
         out.addPublisher(this);
     }
@@ -25,18 +25,19 @@ public class PlusAgent implements Agent {
 
     @Override
     public void reset() {
-
+        x=0.0;
+        y=0.0;
     }
 
     @Override
     public void callback(String topic, Message msg) {
         try{
-            if(topic.equals(first.name))
+            if(topic.equals(first.name))//cheking if topic of the messeage is equals to the name of this topic
                 x= msg.asDouble;
             else if (topic.equals(second.name)) {
                 y= msg.asDouble;
             }
-            if(x!=null && y!=null)
+            if(x!=null && y!=null)//checking if x,y are legal numbers.
                 out.publish(new Message(x+y));
 
         }

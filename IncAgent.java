@@ -27,10 +27,10 @@ public class IncAgent implements Agent {
     @Override
     public void callback(String topic, Message msg) {
         try {
-            if (topic.equals(sub.name))//update the variable (left or right) based on the topic
+            if (topic.equals(sub.name))//cheking if topic of the messeage is equals to the name of this topic
                 x = msg.asDouble;
-            if (x != null) {//checking if both of the numbers is not a null/
-                pub.publish(new Message(x + 1));//publish the result.
+            if (x != null) {//checking if x is a legal number
+                pub.publish(new Message(x + 1));//publish x plus 1.
             }
         }
         catch (Exception e) {
