@@ -40,9 +40,6 @@ public class GenericConfig implements Config {
                 }
             }
         }
-        catch (FileNotFoundException e) {
-            System.out.println("הקובץ לא נמצא בנתיב: " + fileName);
-        }
         catch (Exception e) {
             e.printStackTrace();
         }
