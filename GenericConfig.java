@@ -1,18 +1,15 @@
 package test;
 
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class GenericConfig implements Config {
     private String fileName;
-    List<String> temp;
-    List<Agent> agents;
+    private List<String> temp;
+    private List<Agent> agents;
     public GenericConfig() {
         temp = new ArrayList<String>();
         agents = new ArrayList<>();
@@ -23,12 +20,14 @@ public class GenericConfig implements Config {
 
     @Override
     public void create()  {
-        try( Scanner s=new Scanner(new FileReader(fileName))){
+        try{
+            Scanner s=new Scanner(new FileReader(fileName));
             while(s.hasNextLine()) {
                 temp.add(s.nextLine());
             }
+            s.close();
             if(temp.size()%3==0) {
-                for (int i = 0; i < temp.size(); i++) {
+                for (int i = 0; i < temp.size(); i+=3) {
                     String agentClassName = temp.get(i);
                     String[] inputtopic = temp.get(i + 1).split(",");
                     String[] outputtopic = temp.get(i + 2).split(",");
@@ -40,7 +39,9 @@ public class GenericConfig implements Config {
 
                 }
             }
-            s.close();
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("הקובץ לא נמצא בנתיב: " + fileName);
         }
         catch (Exception e) {
             e.printStackTrace();
