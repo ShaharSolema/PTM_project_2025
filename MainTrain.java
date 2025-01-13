@@ -1,112 +1,89 @@
 package test;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
-import test.TopicManagerSingleton.TopicManager;
-
-public class MainTrain { // simple tests to get you going...
+import test.RequestParser.RequestInfo;
 
 
-    public static void testMessage() {
+public class MainTrain { // RequestParser
+    
 
-        // Test String constructor
-        String testString = "Hello";
-        Message msgFromString = new Message(testString);
-        if (!testString.equals(msgFromString.asText)) {
-            System.out.println("Error: String constructor - asText does not match input string (-5)");
-        }
-        if (!java.util.Arrays.equals(testString.getBytes(), msgFromString.data)) {
-            System.out.println("Error: String constructor - data does not match input string bytes (-5)");
-        }
-        if (!Double.isNaN(msgFromString.asDouble)) {
-            System.out.println("Error: String constructor - asDouble should be NaN for non-numeric string (-5)");
-        }
-        if (msgFromString.date == null) {
-            System.out.println("Error: String constructor - date should not be null (-5)");
-        }
+    private static void testParseRequest() {
+        // Test data
+        String request = "GET /api/resource?id=123&name=test HTTP/1.1\n" +
+                            "Host: example.com\n" +
+                            "Content-Length: 5\n"+
+                            "\n" +
+                            "filename=\"hello_world.txt\"\n"+
+                            "\n" +
+                            "hello world!\n"+
+                            "\n" ;
 
-    }    
+        BufferedReader input=new BufferedReader(new InputStreamReader(new ByteArrayInputStream(request.getBytes())));
+        try {
+            RequestParser.RequestInfo requestInfo = RequestParser.parseRequest(input);
 
-    public static  abstract class AAgent implements Agent{
-        public void reset() {}
-        public void close() {}
-        public String getName(){
-            return getClass().getName();
-        }
-    }
-
-    public static class TestAgent1 extends AAgent{
-
-        double sum=0;
-        int count=0;
-        TopicManager tm=TopicManagerSingleton.get();
-
-        public TestAgent1(){
-            tm.getTopic("Numbers").subscribe(this);
-        }
-
-        @Override
-        public void callback(String topic, Message msg) {
-            count++;
-            sum+=msg.asDouble;
-            
-            if(count%5==0){
-                tm.getTopic("Sum").publish(new Message(sum));
-                count=0;
+            // Test HTTP command
+            if (!requestInfo.getHttpCommand().equals("GET")) {
+                System.out.println("HTTP command test failed (-5)");
             }
 
-        }
-        
-    }
-
-    public static class TestAgent2 extends AAgent{
-
-        double sum=0;
-        TopicManager tm=TopicManagerSingleton.get();
-
-        public TestAgent2(){
-            tm.getTopic("Sum").subscribe(this);
-        }
-
-        @Override
-        public void callback(String topic, Message msg) {
-            sum=msg.asDouble;
-        }
-
-        public double getSum(){
-            return sum;
-        }
-        
-    }
-
-    public static void testAgents(){        
-        TopicManager tm=TopicManagerSingleton.get();
-        TestAgent1 a=new TestAgent1();
-        TestAgent2 a2=new TestAgent2();        
-        double sum=0;
-        for(int c=0;c<3;c++){
-            Topic num=tm.getTopic("Numbers");
-            Random r=new Random();
-            for(int i=0;i<5;i++){
-                int x=r.nextInt(1000);
-                num.publish(new Message(x));
-                sum+=x;
+            // Test URI
+            if (!requestInfo.getUri().equals("/api/resource?id=123&name=test")) {
+                System.out.println("URI test failed (-5)");
             }
-            double result=a2.getSum();
-            if(result!=sum){
-                System.out.println("your code published a wrong result (-10)");
+
+            // Test URI segments
+            String[] expectedUriSegments = {"api", "resource"};
+            if (!Arrays.equals(requestInfo.getUriSegments(), expectedUriSegments)) {
+                System.out.println("URI segments test failed (-5)");
+                for(String s : requestInfo.getUriSegments()){
+                    System.out.println(s);
+                }
+            } 
+            // Test parameters
+            Map<String, String> expectedParams = new HashMap<>();
+            expectedParams.put("id", "123");
+            expectedParams.put("name", "test");
+            expectedParams.put("filename","\"hello_world.txt\"");
+            if (!requestInfo.getParameters().equals(expectedParams)) {
+                System.out.println("Parameters test failed (-5)");
             }
-        }
-        a.close();
-        a2.close();
+
+            // Test content
+            byte[] expectedContent = "hello world!\n".getBytes();
+            if (!Arrays.equals(requestInfo.getContent(), expectedContent)) {
+                System.out.println("Content test failed (-5)");
+            } 
+            input.close();
+        } catch (IOException e) {
+            System.out.println("Exception occurred during parsing: " + e.getMessage() + " (-5)");
+        }        
     }
 
-        
+
+    public static void testServer() throws Exception{
+		// implement your own tests!
+    }
+    
     public static void main(String[] args) {
-        testMessage();
-        testAgents();        
+        testParseRequest(); // 40 points
+        try{
+            testServer(); // 60
+        }catch(Exception e){
+            System.out.println("your server throwed an exception (-60)");
+        }
         System.out.println("done");
     }
+
 }
