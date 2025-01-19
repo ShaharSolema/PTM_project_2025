@@ -1,11 +1,50 @@
 package test;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 public class RequestParser {
 
-    public static RequestInfo parseRequest(BufferedReader reader) throws IOException {        
+    public static RequestInfo parseRequest(BufferedReader reader) throws IOException {
 		// implement
-        
-        return null;
+        try {
+            String line=reader.readLine();
+            if(line==null||line.isEmpty()){
+                throw new IOException("Empty line");
+            }
+            String[] uriuri= line.split(" ");
+            if(uriuri.length!=3){
+                throw new IOException("Invalid URI");
+            }
+            String command=uriuri[0];
+            Map<String, String> parameterss=new HashMap<String, String>();
+            String path=uriuri[1];
+            String []uriParats=path.split("\\?");
+            String[]urisegment={uriParats[0],uriParats[1]};
+            String[]parameters=uriParats[2].split("&");
+            for(String parameter:parameters){
+                String[] key=parameter.split("=");
+                if(key.length!=2){
+                    throw new IOException("Invalid parameter");
+                }
+                parameterss.put(key[0],key[1]);
+            }
+            byte[] contents=null;
+            while((line=reader.readLine())!=null&&!line.startsWith("Content")) {
+            }
+            StringBuilder builder=new StringBuilder();
+            while((line=reader.readLine())!=null) {
+                if(!line.isEmpty()) {
+                    builder.append(line).append("\n");
+                }
+            }
+                contents=builder.toString().getBytes();
+                return (new RequestInfo(command,path,urisegment,parameterss,contents));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 	
 	// RequestInfo given internal class
