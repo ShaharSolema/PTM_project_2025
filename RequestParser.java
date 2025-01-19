@@ -19,7 +19,7 @@ public class RequestParser {
                 throw new IOException("Invalid URI");
             }
             String command=uriuri[0];
-            Map<String, String> parameterss=new HashMap<String, String>();
+            Map<String, String> parameterss=new HashMap<>();
             String path=uriuri[1];
             String []uriParats=path.split("\\?");
             String[]urisegment={uriParats[0],uriParats[1]};
