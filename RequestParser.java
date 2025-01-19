@@ -32,8 +32,7 @@ public class RequestParser {
                 parameterss.put(key[0],key[1]);
             }
             byte[] contents;
-            while((line=reader.readLine())!=null&&!line.startsWith("Content")) {
-            }
+            while((line=reader.readLine())!=null&&!line.startsWith("Content")) {}
             StringBuilder builder=new StringBuilder();
             while((line=reader.readLine())!=null) {
                 if(!line.isEmpty()) {
