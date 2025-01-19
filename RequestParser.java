@@ -24,7 +24,7 @@ public class RequestParser {
             String []uriParats=path.split("\\?");
             String[]urisegment={uriParats[0],uriParats[1]};
             String[]parameters=uriParats[2].split("&");
-            for(String parameter:parameters){
+            for(String parameter:parameters) {
                 String[] key=parameter.split("=");
                 if(key.length!=2){
                     throw new IOException("Invalid parameter");
