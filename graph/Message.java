@@ -1,4 +1,4 @@
-package test;
+package test.graph;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package test;
+package test.graph;
 //package project_biu.graph;
 
 

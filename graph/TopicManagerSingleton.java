@@ -1,5 +1,5 @@
 
-package test;
+package test.graph;
 import java.util.HashMap;
 import java.util.Collection;
 

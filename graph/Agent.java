@@ -1,4 +1,4 @@
-package test;
+package test.graph;
 
 public interface Agent {
     String getName();
