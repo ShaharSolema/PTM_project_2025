@@ -8,22 +8,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class MainTrain { // RequestParser
-    
+public class MainTrain {
 
     private static void testParseRequest() {
         // Test data
         String request = "GET /api/resource?id=123&name=test HTTP/1.1\n" +
-                            "Host: example.com\n" +
-                            "Content-Length: 5\n"+
-                            "\n" +
-                            "filename=\"hello_world.txt\"\n"+
-                            "\n" +
-                            "hello world!\n"+
-                            "\n" ;
+                "Host: example.com\n" +
+                "Content-Length: 5\n" +
+                "\n" +
+                "filename=\"hello_world.txt\"\n" +
+                "\n" +
+                "hello world!\n" +
+                "\n";
 
-        BufferedReader input=new BufferedReader(new InputStreamReader(new ByteArrayInputStream(request.getBytes())));
+        BufferedReader input = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(request.getBytes())));
         try {
             RequestParser.RequestInfo requestInfo = RequestParser.parseRequest(input);
 
@@ -41,15 +39,15 @@ public class MainTrain { // RequestParser
             String[] expectedUriSegments = {"api", "resource"};
             if (!Arrays.equals(requestInfo.getUriSegments(), expectedUriSegments)) {
                 System.out.println("URI segments test failed (-5)");
-                for(String s : requestInfo.getUriSegments()){
+                for (String s : requestInfo.getUriSegments()) {
                     System.out.println(s);
                 }
-            } 
+            }
             // Test parameters
             Map<String, String> expectedParams = new HashMap<>();
             expectedParams.put("id", "123");
             expectedParams.put("name", "test");
-            expectedParams.put("filename","\"hello_world.txt\"");
+            expectedParams.put("filename", "\"hello_world.txt\"");
             if (!requestInfo.getParameters().equals(expectedParams)) {
                 System.out.println("Parameters test failed (-5)");
             }
@@ -58,26 +56,25 @@ public class MainTrain { // RequestParser
             byte[] expectedContent = "hello world!\n".getBytes();
             if (!Arrays.equals(requestInfo.getContent(), expectedContent)) {
                 System.out.println("Content test failed (-5)");
-            } 
+            }
             input.close();
         } catch (IOException e) {
             System.out.println("Exception occurred during parsing: " + e.getMessage() + " (-5)");
-        }        
+        }
     }
 
-
-    public static void testServer() throws Exception{
-		// implement your own tests!
+    public static void testServer() throws Exception {
+        // Implement your own server tests here, e.g., testing server responses
     }
-    
+
     public static void main(String[] args) {
         testParseRequest(); // 40 points
-        try{
-            testServer(); // 60
-        }catch(Exception e){
-            System.out.println("your server throwed an exception (-60)");
+        try {
+            testServer(); // 60 points
+        } catch (Exception e) {
+            System.out.println("Your server threw an exception (-60)");
         }
+
         System.out.println("done");
     }
-
 }
