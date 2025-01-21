@@ -15,11 +15,11 @@ public class TopicManagerSingleton {
             mapi=new HashMap<String,Topic>();
         }
         public Topic getTopic(String name){
-            if(mapi.containsKey(name)){
+            if(mapi.containsKey(name)){//cheking if name exist in hashmap
                 return (mapi.get(name));
             }
             Topic newtopic=new Topic(name);
-            mapi.put(name,newtopic);
+            mapi.put(name,newtopic);//adding topic to the map.
             return mapi.get(name);
         }
         public Collection<Topic> getTopics(){
@@ -30,5 +30,4 @@ public class TopicManagerSingleton {
         }
     }
 }
-
 
